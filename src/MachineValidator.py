@@ -1,13 +1,23 @@
+import Machine  
+
 class MachineValidator:
-  def __init__(self, Machine machine):
+    
+  Machine machine
+  
+  def __init__(self, machine):
     self.machine = machine
       
     
   def IsValidId(input : str) -> bool:
     try:
       val = int(input)
-      return val > 0
+      if (val > 0):
+        return True
+      else:
+        return False  
     except ValueError:
+      return False
+    except Exception:
       return False
     
     
@@ -17,6 +27,7 @@ class MachineValidator:
   def IsValidStatus(input : str) -> bool:
     valid_statuses = ["online", "offline", "maintenance"]
     return input in valid_statuses  
+  
   def IsValidIp(input : str) -> bool: 
     parts = input.split(".")
     if len(parts) != 4:
@@ -28,7 +39,10 @@ class MachineValidator:
           return False
       except ValueError:
         return False
+      except Exception:
+        return False
     return True
+  
   def Validate(self) -> bool:
     return (self.IsValidId(str(self.machine.id)) and
             self.IsValidName(self.machine.name) and
