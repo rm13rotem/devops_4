@@ -4,7 +4,7 @@ from typing import Optional
 class Machine(BaseModel):
   id: int
   name: str
-  status: str = "offline" 
+  status: str = "offline" # can be offline/online/maintenance
   
   ip : Optional[str]
   
