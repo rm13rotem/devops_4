@@ -1,5 +1,8 @@
+import logging
 from pydantic import BaseModel, Field
 from typing import Optional
+
+logger = logging.getLogger(__name__)  
 
 class Machine(BaseModel):
   id: int
@@ -17,6 +20,8 @@ class Machine(BaseModel):
       self.id = id
       self.name = name
       self.status = status  
+      logger.debug(f"Machine created: {self.id}, {self.name}, {self.status}") 
+      
   
   def __str__(self):
       description = f"Machine ID: {self.id}"

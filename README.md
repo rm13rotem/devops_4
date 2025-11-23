@@ -1,7 +1,52 @@
-# devops_4
-## Project description 
-DevOps Infrastructure Provisioning & Configuration Automation Project 
-## Overview 
- This is a rolling project that will evolve as new topics are learned. 
- At this stage, the goal is to build the skeleton of an infrastructure provisioning tool. Future enhancements will integrate AWS and Terraform to create real resources. For now, the provisioning process is mocked to simulate infrastructure automation. Project Objective Develop a modular Python-based automation tool that simulates infrastructure provisioning and service configuration. The project should: • Accept user inputs for defining virtual machines (VMs). • Validate input using Python. • Use classes and modular code structure. • Automate service installation using Bash scripts. • Implement proper logging and error handling. Setup & Repository Initialization • Create a GitHub repository for the project. Define a clear project structure: infra-automation/ |-- scripts/ |-- configs/ |-- logs/ |-- src/ |-- README.md • Set up a virtual environment for Python dependencies. • Push the initial setup to GitHub. Simulating Infrastructure Provisioning Accepting User Input & Validation • The tool should allow users to define machines dynamically. • Input should be validated to ensure correctness. • Store configurations in a JSON file (configs/instances.json). • Use a library like jsonschema or pydantic for validation. Task: • Create a function to prompt users for input. • Implement validation to reject invalid inputs. • Store the collected data in instances.json. Hint: Think about what fields a VM requires (e.g., name, OS, CPU, RAM) and ensure users enter valid values. Building a Modular Python Application Using Classes and Imports • Create a Machine class in src/machine.py. • This class should: • Store machine details. • Provide a method to return a dictionary representation. • Include logging functionality for machine creation. Task: • Implement a basic class structure. • Refactor existing script logic to use the class. • Ensure the main script (infra_simulator.py) interacts with the class correctly. Refactor Exercise: If an initial script exists without classes, refactor it into an objectoriented design. Automating Service Installation with Bash Integrating Bash Scripts for Configuration • Write a Bash script to install and configure a basic service (e.g., Nginx). • Modify the Python script to execute the Bash script after provisioning. • Use Python’s subprocess module to run the script. • Ensure proper error handling in both Python and Bash. Task: • Write a Bash script to automate service installation. • Modify the Python script to call the Bash script. • Add error handling for potential failures. Hint: The Bash script should check if the package is already installed before installing it. Logging & Error Handling Enhancing the Logging System • Implement logging in both Python and Bash scripts. • Write logs to a dedicated file (logs/provisioning.log). • Ensure logs capture: • When provisioning starts and ends. • Any errors encountered. • Success messages for completed actions. Task: • Add logging to Python scripts using the logging module. • Ensure Bash scripts output meaningful logs. • Improve error handling by catching and logging exceptions. Finalizing & Documentation Wrap-Up & Project Documentation • Update README.md to include: • Project overview and objectives. • Setup and execution instructions. • Example expected output. • Ensure code is clean and modular. • Push the final version to GitHub. Task: • Review the project for structure and readability. • Add comments where necessary. • Ensure documentation is clear and concise. Next Steps & Future Enhancements This project is designed to evolve. Once AWS and Terraform are introduced, extend the project to: • Replace the mock provisioning with real AWS instances. • Automate infrastructure management using Terraform. • Introduce more complex services and configurations. F
-id term exam in john bryce devops course (4)
+# Infra Automation (mock)
+
+Current Versioning 1.0.0.3
+(mock, no major changes, no minor version, 3 git pushes so far)
+
+## Overview
+
+This repo contains a minimal Python-based skeleton to simulate infrastructure provisioning and service configuration. It supports:
+
+- interactive creation of VM definitions
+- validation via pydantic
+- saving configs to `configs/instances.json`
+- running a bash installer to configure a service (nginx)
+- logging to `logs/provisioning.log`
+
+## Setup
+
+1. Create a virtualenv and install deps:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+2. Make installer executable:
+
+
+```bash
+chmod +x scripts/install_service.sh
+```
+
+3. Run the simulator:
+
+```bash
+python infra_simulator.py
+```
+
+4. Run main:
+
+```bash
+python main.py
+```
+
+
+## Expected behaviour
+
+The script will prompt you to add machines. Leave name blank to finish.
+
+Machines are validated and appended to configs/instances.json.
+
+For each machine the script calls scripts/install_service.sh. The outcome is in the console and in logs/provisioning.log.

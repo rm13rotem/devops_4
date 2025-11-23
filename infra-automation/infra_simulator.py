@@ -1,3 +1,6 @@
+import logging
+
+
 # Example machine configurations Testing
 # Arrange
 machine_configs = [
@@ -31,3 +34,6 @@ for config in machine_configs:
   assert machines[2].name == "cache-server"
   assert machines[2].cpu == 2
   assert machines[2].ram == 8
+  
+# honestly, I don't know what was meant by the
+# description of the TASK so I just created a simple test

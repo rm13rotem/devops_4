@@ -1,5 +1,7 @@
 import sys
 import os
+import logging
+
 
 # Make sure Python can find the src folder
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
@@ -24,7 +26,8 @@ def list_machines(machines):
     print("\nCurrent machines:")
     for m in machines:
         print("-------------------")
-        print(m)
+        print(m) 
+        #use __str__ method
 
 
 def add_machine(machines):
@@ -67,10 +70,13 @@ def add_machine(machines):
 def main():
     serializer = JsonSerializer()
     machines = serializer.Load()  # Load existing ones
-
+    logger = logging.getLogger(__name__)
+    
+    logger.info("Loaded %d machines from instances.json.", len(machines))
     print("Loaded", len(machines), "machines from instances.json.")
 
-    while True:
+    isRunning = True
+    while isRunning:
         print_menu()
         choice = input("\nChoose an option: ")
 
@@ -83,6 +89,8 @@ def main():
             print("\nMachines saved successfully.")
         elif choice == "4":
             print("Exiting...")
+            logger.info("Exiting the Machine Manager.")
+            isRunning = False
             break
         else:
             print("Invalid option, try again.")
