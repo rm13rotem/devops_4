@@ -9,13 +9,21 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 from src.JsonSerializer import JsonSerializer
 from src.Machine import Machine
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
+    handlers=[ 
+        logging.FileHandler('./logs/log.txt')  
+    ]
+    )
 
 def print_menu():
     print("\n=== Machine Manager ===")
     print("1. List machines")
     print("2. Add a new machine")
-    print("3. Save machines")
-    print("4. Exit")
+    print("3. Save machines")    
+    print("4. Save machines")
+    print("5. Exit")
 
 
 def list_machines(machines):
@@ -66,6 +74,25 @@ def add_machine(machines):
     except Exception as e:
         print(f"\nError: {e}")
 
+def  run_script():
+        try:
+            result = subprocess.run(
+                ["bash", "scripts/server.sh"],
+                check=True,
+                capture_output=True,
+                text=True
+            )
+            print("script output:")
+            print(result.stdout)
+            logging.info("install nginx correctly")
+        except subprocess.CalledProcessError as err:
+            print("script failed with error:")
+            logging.error(f"failed to install nginx do yo {err}")
+            print(err.stderr)
+
+        except FileNotFoundError:
+            print("cant not found bash script ")
+
 
 def main():
     serializer = JsonSerializer()
@@ -88,6 +115,8 @@ def main():
             serializer.Save(machines)
             print("\nMachines saved successfully.")
         elif choice == "4":
+            run_script()
+        elif choice == "5":
             print("Exiting...")
             logger.info("Exiting the Machine Manager.")
             isRunning = False
