@@ -38,3 +38,6 @@
 2026-05-12 14:06:08,447 - INFO - __main__ - Machine added successfully
 2026-05-12 14:06:08,448 - INFO - werkzeug - 127.0.0.1 - - [12/May/2026 14:06:08] "[35m[1mPOST /machines HTTP/1.1[0m" 201 -
 2026-05-12 14:06:21,812 - INFO - werkzeug - 127.0.0.1 - - [12/May/2026 14:06:21] "GET /machines HTTP/1.1" 200 -
+2026-05-12 14:12:53,638 - INFO - werkzeug - 127.0.0.1 - - [12/May/2026 14:12:53] "GET /machines HTTP/1.1" 200 -
+2026-05-12 14:13:02,257 - INFO - werkzeug - 127.0.0.1 - - [12/May/2026 14:13:02] "GET /machines HTTP/1.1" 200 -
+2026-05-12 14:13:16,219 - INFO - werkzeug - 127.0.0.1 - - [12/May/2026 14:13:16] "GET / HTTP/1.1" 200 -

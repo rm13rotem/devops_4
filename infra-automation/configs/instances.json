@@ -1,1 +1,29 @@
-[]
+[
+    {
+        "id": 1,
+        "name": "server01",
+        "ip": null,
+        "operating_system": "Linux",
+        "cpu_cores": 4,
+        "ram_gb": 16,
+        "status": "online"
+    },
+    {
+        "id": 2,
+        "name": "db01",
+        "ip": null,
+        "operating_system": "Linux",
+        "cpu_cores": 4,
+        "ram_gb": 16,
+        "status": "maintenance"
+    },
+    {
+        "id": 3,
+        "name": "backup01",
+        "ip": null,
+        "operating_system": "Linux",
+        "cpu_cores": 4,
+        "ram_gb": 16,
+        "status": "offline"
+    }
+]

@@ -41,7 +41,7 @@ MACHINE_LIST_SCHEMA = {
 }
 
 class JsonSerializer:
-    def __init__(self, path: str = "../configs/instances.json"):
+    def __init__(self, path: str = "/configs/instances.json"):
         self.path = path
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
 
@@ -54,7 +54,7 @@ class JsonSerializer:
             return []
 
         with open(self.path, "r", encoding="utf-8") as file:
-            json_list = json.load(FileExistsError)
+            json_list = json.load(file)
 
         # Validate JSON structure
         try:
