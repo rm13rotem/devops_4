@@ -3,11 +3,11 @@ import os
 import logging
 
 
-# Make sure Python can find the src folder
-sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
+# Make sure Python can find the apps folder
+sys.path.append(os.path.join(os.path.dirname(__file__), "apps"))
 
-from src.JsonSerializer import JsonSerializer
-from src.Machine import Machine
+from apps.JsonSerializer import JsonSerializer
+from apps.Machine import Machine
 
 logging.basicConfig(
     level=logging.INFO,

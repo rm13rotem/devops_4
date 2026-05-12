@@ -2,7 +2,7 @@ import json
 import os
 from typing import List
 from jsonschema import validate, ValidationError
-from Machine import Machine
+from apps.Machine import Machine
 
 class JsonSerializer:
     def __init__(self, path: str = "../configs/instances.json"):
