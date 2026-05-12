@@ -1,129 +1,141 @@
-import sys
 import os
 import logging
+import subprocess
 
-
-# Make sure Python can find the apps folder
-sys.path.append(os.path.join(os.path.dirname(__file__), "apps"))
+from flask import Flask, jsonify, request
 
 from apps.JsonSerializer import JsonSerializer
 from apps.Machine import Machine
 
+
+# Create Flask app
+app = Flask(__name__)
+
+
+# Logging configuration
+os.makedirs("logs", exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
-    handlers=[ 
-        logging.FileHandler('./logs/log.txt')  
+    handlers=[
+        logging.FileHandler('./logs/log.txt'),
+        logging.StreamHandler()
     ]
-    )
+)
 
-def print_menu():
-    print("\n=== Machine Manager ===")
-    print("1. List machines")
-    print("2. Add a new machine")
-    print("3. Save machines")    
-    print("4. Save machines")
-    print("5. Exit")
+logger = logging.getLogger(__name__)
 
 
-def list_machines(machines):
-    if not machines:
-        print("\nNo machines found.")
-        return
-
-    print("\nCurrent machines:")
-    for m in machines:
-        print("-------------------")
-        print(m) 
-        #use __str__ method
+# Load machines from file
+serializer = JsonSerializer()
+machines = serializer.Load()
 
 
-def add_machine(machines):
+# Home route
+@app.route("/")
+def home():
+
+    return jsonify({
+        "message": "Machine Manager Flask App Running"
+    })
+
+
+# Health check route
+@app.route("/health")
+def health():
+
+    return jsonify({
+        "status": "healthy"
+    })
+
+
+# List all machines
+@app.route("/machines", methods=["GET"])
+def list_machines():
+
+    return jsonify([
+        machine.dict()
+        for machine in machines
+    ])
+
+
+# Add machine
+@app.route("/machines", methods=["POST"])
+def add_machine():
+
     try:
-        print("\nEnter details for the new machine:")
-        id_value = int(input("ID: "))
-        name_value = input("Name: ")
-        status_value = input("Status (online/offline): ")
 
-        # Optional fields can be filled automatically by Pydantic
-        ip_value = input("IP (optional, press Enter to skip): ").strip()
-        ip_value = ip_value if ip_value else None
-
-        os_value = input("Operating system (default Linux): ").strip()
-        os_value = os_value if os_value else "Linux"
-
-        cpu_value_input = input("CPU cores (default 4): ").strip()
-        cpu_value = int(cpu_value_input) if cpu_value_input else 4
-
-        ram_value_input = input("RAM in GB (default 16): ").strip()
-        ram_value = int(ram_value_input) if ram_value_input else 16
+        data = request.json
 
         machine = Machine(
-            id=id_value,
-            name=name_value,
-            status=status_value,
-            ip=ip_value,
-            operating_system=os_value,
-            cpu_cores=cpu_value,
-            ram_gb=ram_value
+            id=data["id"],
+            name=data["name"],
+            status=data["status"],
+            ip=data.get("ip"),
+            operating_system=data.get("operating_system", "Linux"),
+            cpu_cores=data.get("cpu_cores", 4),
+            ram_gb=data.get("ram_gb", 16)
         )
 
         machines.append(machine)
-        print("\nMachine added successfully!")
 
-    except Exception as e:
-        print(f"\nError: {e}")
+        serializer.Save(machines)
 
-def  run_script():
-        try:
-            result = subprocess.run(
-                ["bash", "scripts/server.sh"],
-                check=True,
-                capture_output=True,
-                text=True
-            )
-            print("script output:")
-            print(result.stdout)
-            logging.info("install nginx correctly")
-        except subprocess.CalledProcessError as err:
-            print("script failed with error:")
-            logging.error(f"failed to install nginx do yo {err}")
-            print(err.stderr)
+        logger.info("Machine added successfully")
 
-        except FileNotFoundError:
-            print("cant not found bash script ")
+        return jsonify({
+            "message": "Machine added successfully"
+        }), 201
+
+    except Exception as ex:
+
+        logger.error(str(ex))
+
+        return jsonify({
+            "error": str(ex)
+        }), 400
 
 
-def main():
-    serializer = JsonSerializer()
-    machines = serializer.Load()  # Load existing ones
-    logger = logging.getLogger(__name__)
-    
-    logger.info("Loaded %d machines from instances.json.", len(machines))
-    print("Loaded", len(machines), "machines from instances.json.")
+# Run bash script
+@app.route("/run-script", methods=["POST"])
+def run_script():
 
-    isRunning = True
-    while isRunning:
-        print_menu()
-        choice = input("\nChoose an option: ")
+    try:
 
-        if choice == "1":
-            list_machines(machines)
-        elif choice == "2":
-            add_machine(machines)
-        elif choice == "3":
-            serializer.Save(machines)
-            print("\nMachines saved successfully.")
-        elif choice == "4":
-            run_script()
-        elif choice == "5":
-            print("Exiting...")
-            logger.info("Exiting the Machine Manager.")
-            isRunning = False
-            break
-        else:
-            print("Invalid option, try again.")
+        result = subprocess.run(
+            ["bash", "scripts/server.sh"],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+
+        logger.info("Script executed successfully")
+
+        return jsonify({
+            "output": result.stdout
+        })
+
+    except subprocess.CalledProcessError as err:
+
+        logger.error(str(err))
+
+        return jsonify({
+            "error": err.stderr
+        }), 500
+
+    except FileNotFoundError:
+
+        return jsonify({
+            "error": "Script not found"
+        }), 404
 
 
+# Start Flask server
 if __name__ == "__main__":
-    main()
+
+    app.run(
+        host="0.0.0.0",
+        port=5001
+    )
+
