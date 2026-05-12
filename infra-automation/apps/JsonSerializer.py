@@ -4,6 +4,42 @@ from typing import List
 from jsonschema import validate, ValidationError
 from apps.Machine import Machine
 
+# JSON Schema definition
+MACHINE_LIST_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "name": {
+                "type": "string"
+            },
+            "status": {
+                "type": "string"
+            },
+            "ip": {
+                "type": ["string", "null"]
+            },
+            "operating_system": {
+                "type": "string"
+            },
+            "cpu_cores": {
+                "type": "integer"
+            },
+            "ram_gb": {
+                "type": "integer"
+            }
+        },
+        "required": [
+            "id",
+            "name",
+            "status"
+        ]
+    }
+}
+
 class JsonSerializer:
     def __init__(self, path: str = "../configs/instances.json"):
         self.path = path

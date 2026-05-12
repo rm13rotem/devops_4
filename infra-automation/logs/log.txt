@@ -30,3 +30,11 @@
 2026-05-12 13:41:00,971 - INFO - werkzeug - [33mPress CTRL+C to quit[0m
 2026-05-12 13:41:10,835 - ERROR - __main__ - name 'MACHINE_LIST_SCHEMA' is not defined
 2026-05-12 13:41:10,836 - INFO - werkzeug - 127.0.0.1 - - [12/May/2026 13:41:10] "[31m[1mPOST /machines HTTP/1.1[0m" 400 -
+2026-05-12 14:05:37,671 - INFO - werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.29.141.152:5001
+2026-05-12 14:05:37,672 - INFO - werkzeug - [33mPress CTRL+C to quit[0m
+2026-05-12 14:06:08,447 - INFO - __main__ - Machine added successfully
+2026-05-12 14:06:08,448 - INFO - werkzeug - 127.0.0.1 - - [12/May/2026 14:06:08] "[35m[1mPOST /machines HTTP/1.1[0m" 201 -
+2026-05-12 14:06:21,812 - INFO - werkzeug - 127.0.0.1 - - [12/May/2026 14:06:21] "GET /machines HTTP/1.1" 200 -
