@@ -1,11 +1,8 @@
 @Library('my-shared-library') _
 
 pipeline {
-    agent any
 
-    environment {
-        SONAR_TOKEN = credentials('sonar-scanner')
-    }
+    agent any
 
     stages {
 
@@ -43,6 +40,7 @@ pipeline {
     }
 
     post {
+
         success {
             echo 'Pipeline completed successfully'
         }
