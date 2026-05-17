@@ -1,0 +1,182 @@
+@Library('my-shared-library') _
+
+pipeline {
+    agent any
+    stages {
+        stage('Hello') {
+            steps {
+                script{
+                    general.sayHi()
+                }
+            }
+        }
+        
+        stage('Get Source Control') {
+            steps {
+                script{
+                    sourceC.gitPull()
+                }
+                
+            }
+        }
+        
+        stage('Close SCM') {
+            steps {
+                script{
+                    sourceC.gitClone('mybranch', 'myrepo')
+                }
+                
+            }
+        }
+        
+        stage('Wait for User Approval') {
+            when {
+                    not {
+                        branch 'main'
+                    }
+                }
+            steps {
+                
+                script {
+                    // Wait for user interaction and store the result
+                    def userInput = input message: 'Is the application running successfully?',
+                                         parameters: [choice(name: 'Proceed', choices: 'Proceed\nAbort', description: 'Choose an option')]
+                    // Set a variable based on user input
+                    env.USER_CHOICE = userInput
+                }
+            }
+        }
+        
+        stage('Build in Parallel'){
+            parallel {
+               stage('Docker Build'){
+                    when {
+                            branch 'main'
+                        }
+                    steps {
+                          
+                        echo "docker compose build"
+                    }
+                }
+
+                stage('Trivy scan'){
+                    steps {
+                        echo "trivy.com - scan for vulnerabilities"
+                    }
+                }
+
+                stage('Bandit scan'){
+                    steps{
+                        echo "scan security"
+                    }
+                }
+
+                stage('Sonarqube'){
+                    steps{
+                        echo "Scan the sonar cube (sonarqube)"
+                    }
+                }
+            }
+        }
+         
+        stage('Sign image') {
+            steps {
+                echo 'sign image'
+            }
+        }
+            
+        stage('Docker push (Parallel)'){
+            parallel {
+                
+                stage('Docker push'){
+                    steps{
+                        echo "docker push to docker hub"
+                    }
+                }
+
+                stage('unit test'){
+                    steps{
+                        echo "unit test"
+                    }
+                }
+
+                stage('Integrity test'){
+                    steps{
+                        echo "check the database"
+                    }
+                }
+
+                stage('End to end test'){
+                    steps{
+                        echo "run endpoints after docker compose up"
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            when {
+                expression { env.USER_CHOICE == 'Proceed' }
+            }
+            steps {
+                echo "deployed"
+            }
+        }
+        
+        stage('End to End Testing') {
+            when {
+                expression { env.USER_CHOICE == 'Proceed' }
+            }
+            steps {
+                echo "Testing"
+            }
+        }
+        
+        stage('Create Artifact') {
+            steps {
+                sh "echo 'Hello World!' > a.txt"
+                sh "date >> a.txt"
+                archiveArtifacts artifacts: 'a.txt', allowEmptyArchive: true
+            }
+        }
+
+        stage('Continue the pipeline') {
+            // Run this stage ONLY! if the user chooses 'Proceed'
+
+            when {
+                expression { env.USER_CHOICE == 'Proceed' }
+            }
+            steps {
+                script {
+                    echo 'Continuing the pipeline...'
+                }
+            }
+        }
+
+        stage('Abort the Pipeline') {
+            // Run this stage ONLY! if the user chooses 'Abort'
+            when {
+                expression { env.USER_CHOICE == 'Abort' }
+            }
+            steps {
+                script {
+                    error 'Pipeline aborted by the user'
+                }
+            }
+        }
+// Run this stage regardless of the user choice but we will check the user choice in the stage and print a message
+        stage('Finalize the Pipeline') {
+            steps {
+                script {
+                    if (env.USER_CHOICE == 'Proceed') {
+                        echo 'Pipeline completed successfully'
+                    } else {
+                        echo 'Pipeline aborted by the user'
+                    }
+                }
+            }
+        }
+        
+        
+    }
+}
