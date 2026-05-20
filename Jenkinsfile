@@ -59,5 +59,11 @@ podTemplate(cloud: 'kubernetes', containers: [
               sh "docker push ${appimage}"
             }
         } 
+
+		stage('Helm install - TBD') {    
+			container('docker') {
+              echo "helm install..."
+            }
+		}
     }
 }
