@@ -9,16 +9,16 @@ spec:
 
   selector:
     matchLabels:
-      app: machine-manager
+      app: {{ .Values.image.repository }}
 
   template:
     metadata:
       labels:
-        app: machine-manager
+        app: {{ .Values.image.repository }}
 
     spec:
       containers:
-        - name: machine-manager
+        - name: machine-manager-container
 
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
 
