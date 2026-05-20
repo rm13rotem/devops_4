@@ -1,7 +1,7 @@
 def appname = "devops"
 def repo = "rm13rotem"  // Replace with your DockerHub username
 def apptag = "${env.BUILD_NUMBER}"
-def appimage = "docker.io/${repo}/${appname}:$(apptag}"
+def appimage = "docker.io/${repo}/${appname}:${apptag}"
 
 
 podTemplate(cloud: 'kubernetes', containers: [
