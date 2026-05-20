@@ -1,4 +1,4 @@
-def appname = "hello-newapp"
+def appname = "devops_4"
 def repo = "rm13rotem"  // Replace with your DockerHub username
 def appimage = "docker.io/${repo}/${appname}"
 def apptag = "${env.BUILD_NUMBER}"
@@ -18,18 +18,25 @@ podTemplate(cloud: 'kubernetes', containers: [
     emptyDirVolume(mountPath: '/var/lib/docker', memory: false) // Q: Why do we need this volume?
   ]) {
     node(POD_LABEL) {
-        stage('chackout') {
+        stage('Checkout from git') {
             container('jnlp') {
             sh '/usr/bin/git config --global http.sslVerify false'
 	    checkout scm
           }
-        } // end chackout
+        } 
 
-        stage('Hello') {
+        stage('Build Image') {
             container('docker') {
               echo "Building docker image..."
-              sh "echo docker push $appimage"
+              sh "docker build -t $(appimage):1.$(apptag} ."
             }
-        } //end hello
+        } 
+		
+        stage('Push Image to Docker HUB') {
+            container('docker') {
+              echo "push docker image..."
+              sh "docker push $(appimage):1.${apptag}"
+            }
+        } 
     }
 }
