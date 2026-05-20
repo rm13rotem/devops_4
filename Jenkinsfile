@@ -33,6 +33,26 @@ podTemplate(cloud: 'kubernetes', containers: [
             }
         } 
 		
+		stage('Docker Login') {
+
+		    container('docker') {
+		
+		        withCredentials([
+		            usernamePassword(
+		                credentialsId: 'rm13rotem',
+		                usernameVariable: 'DOCKER_USER',
+		                passwordVariable: 'DOCKER_TOKEN'
+		            )
+		        ]) {
+		
+		            sh '''
+		                echo "$DOCKER_TOKEN" | docker login \
+		                -u "$DOCKER_USER" \
+		                --password-stdin
+		            '''
+		        }
+		    }
+		}
         stage('Push Image to Docker HUB') {
             container('docker') {
               echo "push docker image..."
