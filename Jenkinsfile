@@ -29,14 +29,14 @@ podTemplate(cloud: 'kubernetes', containers: [
         stage('Build Image') {
             container('docker') {
               echo "Building docker image..."
-              sh "docker build -t $(appimage) ."
+              sh "docker build -t ${appimage} ."
             }
         } 
 		
         stage('Push Image to Docker HUB') {
             container('docker') {
               echo "push docker image..."
-              sh "docker push $(appimage)"
+              sh "docker push ${appimage}"
             }
         } 
     }
