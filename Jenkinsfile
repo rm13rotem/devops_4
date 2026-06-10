@@ -60,10 +60,19 @@ podTemplate(cloud: 'kubernetes', containers: [
             }
         } 
 
-		stage('Helm install - TBD') {    
-			container('docker') {
-              echo "helm install..."
+		stage('Helm template install') {
+            container('docker') {
+                sh '''
+                    git clone https://github.com/rm13rotem/argo_gitops
+                    cd argo_gitops
+
+                    helm template my-app ./helm > devops4.yaml
+
+                    git add devops4.yaml
+                    git commit -m "Update manifest"
+                    git push
+                '''
             }
-		}
+        }
     }
 }
