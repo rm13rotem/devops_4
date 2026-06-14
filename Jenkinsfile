@@ -60,6 +60,12 @@ podTemplate(cloud: 'kubernetes', containers: [
             }
         } 
 
+		stage('Checkout') {
+            steps {
+                git credentialsId: 'github-creds',
+                    url: 'https://github.com/rm13rotem/argo_gitops.git'
+            }
+        }
 		
 		stage('Helm template install') {
             container('docker') {
@@ -72,6 +78,10 @@ podTemplate(cloud: 'kubernetes', containers: [
                     chmod 700 get_helm.sh
                     ./get_helm.sh
 				
+
+					git config --global user.email "rm13rotem@gmail.com"
+  					git config --global user.name "Rotem Meron"
+					
                     git clone https://github.com/rm13rotem/argo_gitops
                     
                     helm template my-app ./helm > argo_gitops/devops4.yaml
@@ -80,9 +90,6 @@ podTemplate(cloud: 'kubernetes', containers: [
 
                     git add devops4.yaml
                     git commit -m "Update manifest"
-
-					git config --global user.email "rm13rotem@gmail.com"
-  					git config --global user.name "Rotem Meron"
                     git push
                 '''
             }
