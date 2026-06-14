@@ -61,7 +61,7 @@ podTemplate(cloud: 'kubernetes', containers: [
         } 
 
 		stage('Checkout') {
-            steps {
+            container('docker') {
                 git credentialsId: 'github-creds',
                     url: 'https://github.com/rm13rotem/argo_gitops.git'
             }
