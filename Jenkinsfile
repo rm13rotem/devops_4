@@ -63,8 +63,13 @@ podTemplate(cloud: 'kubernetes', containers: [
 		stage('Helm template install') {
             container('docker') {
                 sh '''
+                    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+				    helm version
+				
                     git clone https://github.com/rm13rotem/argo_gitops
                     cd argo_gitops
+
+					
 
                     helm template my-app ./helm > devops4.yaml
 
