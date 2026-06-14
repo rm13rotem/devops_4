@@ -63,13 +63,22 @@ podTemplate(cloud: 'kubernetes', containers: [
 		stage('Helm template install') {
             container('docker') {
                 sh '''
-                    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-				    helm version
 				
-                    git clone https://github.com/rm13rotem/argo_gitops
-                    cd argo_gitops
-
+                    sudo apt update
+					sudo apt install -y curl gnupg apt-transport-https
 					
+					curl https://baltocdn.com/helm/signing.asc | \
+					gpg --dearmor | \
+					sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+					
+					echo "deb [signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | \
+					sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+					
+					sudo apt update
+					sudo apt install -y helmhelm version
+									
+                    git clone https://github.com/rm13rotem/argo_gitops
+                    cd argo_gitops					
 
                     helm template my-app ./helm > devops4.yaml
 
