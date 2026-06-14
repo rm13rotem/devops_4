@@ -80,6 +80,9 @@ podTemplate(cloud: 'kubernetes', containers: [
 
                     git add devops4.yaml
                     git commit -m "Update manifest"
+
+					git config --global user.email "rm13rotem@gmail.com"
+  					git config --global user.name "Rotem Meron"
                     git push
                 '''
             }
