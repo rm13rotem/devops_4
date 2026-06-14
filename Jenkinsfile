@@ -59,39 +59,38 @@ podTemplate(cloud: 'kubernetes', containers: [
               sh "docker push ${appimage}"
             }
         } 
-
-		stage('Checkout') {
-            container('docker') {
-                git credentialsId: 'github-creds',
-                    url: 'https://github.com/rm13rotem/argo_gitops.git'
-            }
-        }
 		
 		stage('Helm template install') {
             container('docker') {
-                sh '''
-				
-                    apk add --no-cache curl
-                    apk add --no-cache bash
-				
-					curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
-                    chmod 700 get_helm.sh
-                    ./get_helm.sh
-				
-
-					git config --global user.email "rm13rotem@gmail.com"
-  					git config --global user.name "Rotem Meron"
+				withCredentials([usernamePassword(
+                    credentialsId: 'github-creds',
+                    usernameVariable: 'GIT_USER',
+                    passwordVariable: 'GIT_TOKEN'
+                )]) {
+	                sh '''
 					
-                    git clone https://github.com/rm13rotem/argo_gitops
-                    
-                    helm template my-app ./helm > argo_gitops/devops4.yaml
-
-					cd argo_gitops					
-
-                    git add devops4.yaml
-                    git commit -m "Update manifest"
-                    git push
-                '''
+	                    apk add --no-cache curl
+	                    apk add --no-cache bash
+					
+						curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+	                    chmod 700 get_helm.sh
+	                    ./get_helm.sh
+					
+	
+						git config --global user.email "rm13rotem@gmail.com"
+	  					git config --global user.name "Rotem Meron"
+						
+	                    git clone https://$GIT_USER:$GIT_TOKEN@github.com/rm13rotem/argo_gitops
+	                    
+	                    helm template my-app ./helm > argo_gitops/devops4.yaml
+	
+						cd argo_gitops					
+	
+	                    git add devops4.yaml
+	                    git commit -m "Update manifest"
+	                    git push
+	                '''
+				}
             }
         }
     }
