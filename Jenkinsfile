@@ -73,9 +73,10 @@ podTemplate(cloud: 'kubernetes', containers: [
                     ./get_helm.sh
 				
                     git clone https://github.com/rm13rotem/argo_gitops
-                    cd argo_gitops					
+                    
+                    helm template my-app ./helm > argo_gitops/devops4.yaml
 
-                    helm template my-app ./helm > devops4.yaml
+					cd argo_gitops					
 
                     git add devops4.yaml
                     git commit -m "Update manifest"
